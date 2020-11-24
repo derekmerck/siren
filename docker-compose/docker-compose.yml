@@ -1,0 +1,116 @@
+# Docker-compose service stack for SIREN services:
+# - Traefik front end rev proxy
+# - whoami test service
+# - Orthanc review/archive site (prod/staging)
+# - Orthanc incoming queue for anonymization (prod/staging)
+# - Diana service container(s)
+# - Redis persistent data backend for registry hashes
+
+version: "3.8"
+
+services:
+
+  traefik:
+    image: "traefik:v2.3"
+    container_name: traefik
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=PathPrefix(`/whoami/`)"
+      - "traefik.http.middlewares.whoami.stripprefix.prefixes=/whoami/"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+  orthanc-queue:
+    image: derekmerck/orthanc-cwbv
+    container_name: orthanc-queue
+    ports:
+      - "8042:8042"
+    links:
+      - orthanc-hobit
+    # TODO: Add credentials
+    restart: unless-stopped
+
+  orthanc-queue-staging:
+    image: derekmerck/orthanc-cwbv
+    container_name: orthanc-queue-staging
+    ports:
+      - "8043:8042"
+    links:
+      - orthanc-hobit-staging
+    # TODO: Add credentials
+    restart: unless-stopped
+
+  orthanc-hobit:
+    image: derekmerck/orthanc-cwbv
+    container_name: orthanc-hobit
+    volumes:
+      - orthanc-hobit-v:/var/orthanc
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hobit.loadbalancer.server.port=8042"
+      - "traefik.http.routers.hobit.rule=PathPrefix(`/hobit/`)"
+      - "traefik.http.routers.hobit.entrypoints=web"
+      - "traefik.http.middlewares.hobit-stripprefix.stripprefix.prefixes=/hobit/"
+      - "traefik.http.routers.hobit.middlewares=hobit-stripprefix@docker"
+    restart: unless-stopped
+
+    # TODO: Add credentials
+
+  orthanc-hobit-staging:
+    image: derekmerck/orthanc-cwbv
+    container_name: orthanc-hobit-staging
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.hobit-st.loadbalancer.server.port=8042"
+      - "traefik.http.routers.hobit-st.rule=PathPrefix(`/hobit-staging/`)"
+      - "traefik.http.routers.hobit-st.entrypoints=web"
+      - "traefik.http.middlewares.hobit-st-stripprefix.stripprefix.prefixes=/hobit-staging/"
+      - "traefik.http.routers.hobit-st.middlewares=hobit-st-stripprefix@docker"
+    # TODO: Add credentials
+    restart: unless-stopped
+
+#  redis:
+#    image: redis
+#    container_name: redis
+##    command: redis-server --requirepass ${SIREN_ADMIN}
+#    # port: 6379
+#    # TODO: Add credentials
+
+  # docker run -it -v /data/incoming/:/data/incoming --network services_default derekmerck/diana3 /bin/bash
+
+  diana:
+    image: derekmerck/diana3
+    container_name: diana
+    volumes:
+      - /data/incoming:/data/incoming
+#      - type: bind
+#        source: /data/incoming
+#        target: /data/incoming
+    links:
+#      - redis
+#      - orthanc-queue:queue
+      - orthanc-queue-staging:queue-s
+#      - orthanc-hobit:hobit
+      - orthanc-hobit-staging:hobit-s
+    # TODO: Add service file w credentials
+    command: tail -f /dev/null
+    restart: unless-stopped
+
+volumes:
+  incoming-v: {}
+  orthanc-hobit-v: {}
