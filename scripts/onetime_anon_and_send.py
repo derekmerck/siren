@@ -26,19 +26,21 @@ from diana.services.orthanc import oid_from
 CLEAR_SOURCE = False
 ANNOUNCMENT_INTERVAL = 10
 
-# Test study oid
-STUDY_OID = ""
+# Set a test study oid
+STUDY_OID = "xxx"
 
-# siren-prod
-# ORTHANC_QUEUE_URL = "http://orthanc-queue:8042"
-# ORTHANC_PEER_URL  = "http://localhost/hobit/"
-# CACHE_FILE = "/data/tmp/hashes.pkl"
+RUN_PROD = False
 
-# dev-staging
-ORTHANC_QUEUE_URL = "http://localhost:8043"
-ORTHANC_PEER_URL  = "http://localhost/hobit-staging/"
-CACHE_FILE        = "/tmp/hashes.pkl"
-# todo: Peer must have "diana-hash" metadata name assigned and stash info
+if RUN_PROD:
+    # siren-prod
+    ORTHANC_QUEUE_URL  = "http://queue:8042"
+    ORTHANC_PEER_URL  = "http://localhost/hobit/"
+    CACHE_FILE   = "/data/tmp/hashes.pkl"
+else:
+    # siren-staging
+    ORTHANC_QUEUE_URL  = "http://queue-s:8042"
+    ORTHANC_PEER_URL  = "http://localhost/hobit-staging/"
+    CACHE_FILE   = "/data/tmp/hashes-s.pkl"
 
 
 def anonymize_and_send_w_registry(

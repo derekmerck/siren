@@ -4,7 +4,12 @@ from diana.services import HashRegistry
 from diana.dicom import DLv
 from diana.dicom import DcmUIDMint
 
-CACHE_FILE = "/tmp/hashes.pkl"
+RUN_PROD = False
+
+if RUN_PROD:
+    CACHE_FILE = "/tmp/hashes.pkl"
+else:
+    CACHE_FILE = "/tmp/hashes-s.pkl"
 
 if __name__ == "__main__":
 

@@ -24,15 +24,18 @@ CLEAR_DICOM  = False  # Reset orthanc data
 UPLOAD_DICOM = True  # Upload Dicom files
 ANNOUNCEMENT_INTERVAL = 50
 
-# siren-prod
-# ROOT_PATH    = "/data/incoming"
-# ORTHANC_URL  = "http://orthanc-queue:8042"
-# CACHE_FILE     = "/data/tmp/hashes.pkl"
+RUN_PROD = False
 
-# dev-staging
-ROOT_PATH    = "/data/incoming"
-ORTHANC_URL  = "http://orthanc-q:8043"  # Staging queue
-CACHE_FILE   = "/tmp/hashes.pkl"
+if RUN_PROD:
+    # siren-prod
+    ROOT_PATH    = "/data/incoming"
+    ORTHANC_URL  = "http://queue:8042"
+    CACHE_FILE   = "/data/tmp/hashes.pkl"
+else:
+    # siren-staging
+    ROOT_PATH    = "/data/incoming"
+    ORTHANC_URL  = "http://queue-s:8042"
+    CACHE_FILE   = "/data/tmp/hashes-s.pkl"
 
 
 def register_path(D: DicomDirectory,

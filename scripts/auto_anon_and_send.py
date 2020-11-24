@@ -15,22 +15,26 @@ from onetime_anon_and_send import anonymize_and_send_w_registry
 UPLOAD_DICOM   = True
 ANNOUNCEMENT_INTERVAL = 10
 
-# siren-prod
-# ROOT_PATH    = "/data/incoming"
-# ORTHANC_URL  = "http://orthanc-queue:8042"
-# CACHE_FILE   = "/data/tmp/hashes.pkl"
+RUN_PROD = False
 
-# dev-staging
-ORTHANC_QUEUE_URL   = "http://localhost:8043"
-ORTHANC_ARCHIVE_URL = "http://localhost/hobit/"
-CACHE_FILE          = "/tmp/hashes.pkl"
+if RUN_PROD:
+    # siren-prod
+    ORTHANC_QUEUE_URL  = "http://queue:8042"
+    ORTHANC_PEER_URL  = "http://localhost/hobit/"
+    CACHE_FILE   = "/data/tmp/hashes.pkl"
+else:
+    # siren-staging
+    ORTHANC_QUEUE_URL  = "http://queue-s:8042"
+    ORTHANC_PEER_URL  = "http://localhost/hobit-staging/"
+    CACHE_FILE   = "/data/tmp/hashes-s.pkl"
+
 
 if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
 
     O = ObservableOrthanc(url=ORTHANC_QUEUE_URL)
-    P = ObservableOrthanc(url=ORTHANC_ARCHIVE_URL)
+    P = ObservableOrthanc(url=ORTHANC_PEER_URL)
     H = HashRegistry(cache_file=CACHE_FILE)
 
     def handle_study(event: Event, source: ObservableOrthanc):
@@ -41,8 +45,8 @@ if __name__ == "__main__":
     t_file = Trigger(
         source=O,
         event_type=DicomEventType.STUDY_STABLE,
-        handler=print
-        # handler=handle_file
+        # handler=print
+        handler=handle_study
     )
 
     W = Watcher(triggers=[t_file])

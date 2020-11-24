@@ -68,7 +68,6 @@ services:
       - "traefik.http.middlewares.hobit-stripprefix.stripprefix.prefixes=/hobit/"
       - "traefik.http.routers.hobit.middlewares=hobit-stripprefix@docker"
     restart: unless-stopped
-
     # TODO: Add credentials
 
   orthanc-hobit-staging:
