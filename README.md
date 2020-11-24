@@ -25,6 +25,14 @@ Make sure we are on latest
 
 ```
 $ docker exec -it diana /bin/bash
-$ cd /opt/diana3
+$ cd /opt/siren
 $ git pull
+```
+
+Test connection
+
+```
+$ root@9ed454f28617:/opt/siren/scripts# ping queue-s
+  PING queue-s (172.22.0.5) 56(84) bytes of data.
+  64 bytes from orthanc-queue-staging.docker-compose_default (172.22.0.5): icmp_seq=1 ttl=64 time=0.151 ms
 ```

@@ -9,19 +9,13 @@ from diana.daemons import ObservableDicomDir
 from diana.services import Orthanc, HashRegistry
 
 # CONFIG
-
 UPLOAD_DICOM   = True
 ANNOUNCEMENT_INTERVAL = 10
 
 # siren-prod
-# ROOT_PATH    = "/data/incoming"
-# ORTHANC_URL  = "http://orthanc-queue:8042"
-# CACHE_FILE   = "/data/tmp/hashes.pkl"
-
-# dev-staging
-ROOT_PATH    = "/Users/derek/data/incoming"
-ORTHANC_URL  = "http://localhost:8043"
-CACHE_FILE   = "/tmp/hashes.pkl"
+ROOT_PATH    = "/data/incoming"
+ORTHANC_URL  = "http://queue-s:8042"
+CACHE_FILE   = "/data/tmp/hashes.pkl"
 
 if __name__ == "__main__":
 
