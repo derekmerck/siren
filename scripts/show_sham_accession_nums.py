@@ -7,9 +7,9 @@ from diana.dicom import DcmUIDMint
 RUN_PROD = False
 
 if RUN_PROD:
-    CACHE_FILE = "/tmp/hashes.pkl"
+    CACHE_FILE = "/data/tmp/hashes.pkl"
 else:
-    CACHE_FILE = "/tmp/hashes-s.pkl"
+    CACHE_FILE = "/data/tmp/hashes-s.pkl"
 
 if __name__ == "__main__":
 

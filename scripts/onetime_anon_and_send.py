@@ -34,12 +34,12 @@ RUN_PROD = False
 if RUN_PROD:
     # siren-prod
     ORTHANC_QUEUE_URL  = "http://queue:8042"
-    ORTHANC_PEER_URL  = "http://localhost/hobit/"
+    ORTHANC_PEER_URL  = "http://hobit:8042"
     CACHE_FILE   = "/data/tmp/hashes.pkl"
 else:
     # siren-staging
     ORTHANC_QUEUE_URL  = "http://queue-s:8042"
-    ORTHANC_PEER_URL  = "http://localhost/hobit-staging/"
+    ORTHANC_PEER_URL  = "http://hobit-s:8042"
     CACHE_FILE   = "/data/tmp/hashes-s.pkl"
 
 
@@ -58,12 +58,30 @@ def anonymize_and_send_w_registry(
         P = O  # Stash result in-place
 
     study_dx = O.get(study_oid)
-    study_dx.dhash = H.get(study_dx.mhash)["dhash"]
+    print(f"Processing study {study_oid}")
+
+    try:
+        study_dx.dhash = H.get(study_dx.mhash)["dhash"]
+    except KeyError as e:
+        print(e)
+        print("Failed to anonymize study, this is a serious error")
+        print(study_dx)
+        return
+
     study_info = O.get(study_oid, view="raw")
-    new_inst_info = None
+    # new_inst_info = None
     for ser_oid in study_info["Series"]:
         ser_dx = O.get(ser_oid, dlvl=DLv.SERIES)
-        ser_dx.dhash = H.get(ser_dx.mhash)["dhash"]
+        print(f"Processing series {ser_oid}")
+
+        try:
+            ser_dx.dhash = H.get(ser_dx.mhash)["dhash"]
+        except KeyError as e:
+            print(e)
+            print("Failed to anonymize series, possibly no pixel data?")
+            print(ser_dx)
+            continue
+
         ser_info = O.get(ser_oid, dlvl=DLv.SERIES, view="raw")
         for inst_oid in ser_info["Instances"]:
             n += 1

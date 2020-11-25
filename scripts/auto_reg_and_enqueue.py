@@ -43,6 +43,7 @@ if __name__ == "__main__":
         if dx is not None:
             logging.debug(f"putting {dx}")
             H.put(dx)
+            H.shelve()
             if UPLOAD_DICOM and Q is not None:
                 Q.put(dx)
 
