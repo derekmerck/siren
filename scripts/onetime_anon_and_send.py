@@ -47,10 +47,16 @@ import re
 
 def best_pt_id(dx: Dixel):
     candidate = dx.tags.get("PatientID", "")
+    # Deal with $$ and other symbols except '-'
     candidate_ = re.sub(r'[^\w-]', '', candidate)
+    # '-' is _usually_ {patient_id}-{study_num}
+    if candidate_.find("-") >= 0:
+        candidate_ = candidate_.split("-")[0]
     if candidate_ != "":
         return candidate_
     candidate = dx.tags.get("PatientName", "")
+    if candidate_.find("-") >= 0:
+        candidate_ = candidate_.split("-")[0]
     candidate_ = re.sub(r'[^\w-]', '', candidate)
     if candidate_ != "":
         return candidate_
