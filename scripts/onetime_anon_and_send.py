@@ -189,4 +189,5 @@ if __name__ == "__main__":
     H = HashRegistry(cache_file=CACHE_FILE)
     # anonymize_and_send_w_registry(STUDY_OID, O, H, P, clear_source=CLEAR_SOURCE)
 
-    anon_and_push_all(O, H, P, clear_source=CLEAR_SOURCE)
+    # anon_and_push_all(O, H, P, clear_source=CLEAR_SOURCE)
+    review_patient_ids(O)
