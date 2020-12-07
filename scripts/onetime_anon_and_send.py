@@ -43,6 +43,15 @@ else:
     CACHE_FILE   = "/data/tmp/hashes-s.pkl"
 
 
+def best_pt_id(dx: Dixel):
+    candidate = dx.tags.get("PatientID", "")
+    if candidate != "":
+        return candidate
+    candidate = dx.tags.get("PatientName", "")
+    if candidate != "":
+        return candidate
+    return "UNKNOWN"
+
 def anonymize_and_send_w_registry(
         study_oid: str,
         O: Orthanc,
@@ -91,15 +100,6 @@ def anonymize_and_send_w_registry(
 
             inst_dx = O.get(inst_oid, dlvl=DLv.INSTANCE)
             inst_dx.dhash = H.get(inst_dx.mhash)["dhash"]
-
-            def best_pt_id(dx: Dixel):
-                candidate = dx.tags.get("PatientID", "")
-                if candidate != "":
-                    return candidate
-                candidate = dx.tags.get("PatientName", "")
-                if candidate != "":
-                    return candidate
-                return "UNKNOWN"
 
             m = orthanc_sham_map(
                 stu_mhash=study_dx.mhash,
@@ -170,6 +170,16 @@ def anon_and_push_all(queue: Orthanc,
 
     for oid in queue.inventory():
         anonymize_and_send_w_registry(oid, queue, reg, archive, clear_source)
+
+
+def review_patient_ids(queue: Orthanc):
+
+    for study_oid in queue.inventory():
+        study_dx = O.get(study_oid)
+        pt_id = best_pt_id(study_dx)
+        print(f"Patient ID: {study_dx.tags.get('PatientID')}")
+        print(f"Patient Name: {study_dx.tags.get('PatientID')}")
+        print(f"Best Patient ID: {pt_id}")
 
 
 if __name__ == "__main__":
