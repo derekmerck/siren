@@ -22,9 +22,10 @@ from diana.dicom import DLv
 from diana.dixel import Dixel, orthanc_sham_map
 from diana.services import Orthanc, HashRegistry
 from diana.services.orthanc import oid_from
+import re
 
 CLEAR_SOURCE = False
-ANNOUNCMENT_INTERVAL = 10
+ANNOUNCEMENT_INTERVAL = 10
 
 # Set a test study oid
 STUDY_OID = "xxx"
@@ -41,9 +42,6 @@ else:
     ORTHANC_QUEUE_URL  = "http://queue-s:8042"
     ORTHANC_PEER_URL  = "http://hobit-s:8042"
     CACHE_FILE   = "/data/tmp/hashes-s.pkl"
-
-import re
-
 
 def best_pt_id(dx: Dixel):
     candidate = dx.tags.get("PatientID", "")
@@ -106,7 +104,7 @@ def anonymize_and_send_w_registry(
         ser_info = O.get(ser_oid, dlvl=DLv.SERIES, view="raw")
         for inst_oid in ser_info["Instances"]:
             n += 1
-            if n % ANNOUNCMENT_INTERVAL == 0:
+            if n % ANNOUNCEMENT_INTERVAL == 0:
                 print(f"Processed {n} instances")
                 H.shelve()
 
@@ -202,5 +200,5 @@ if __name__ == "__main__":
     H = HashRegistry(cache_file=CACHE_FILE)
     # anonymize_and_send_w_registry(STUDY_OID, O, H, P, clear_source=CLEAR_SOURCE)
 
-    # anon_and_push_all(O, H, P, clear_source=CLEAR_SOURCE)
-    review_patient_ids(O)
+    anon_and_push_all(O, H, P, clear_source=CLEAR_SOURCE)
+    # review_patient_ids(O)

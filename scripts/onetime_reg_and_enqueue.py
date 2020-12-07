@@ -19,9 +19,9 @@ from pprint import pprint
 from diana.services import HashRegistry, DicomDirectory, Orthanc
 from diana.dicom import DLv
 
-CLEAR_HASHES = False  # Reset hash registry
+CLEAR_HASHES = True  # Reset hash registry
 CLEAR_DICOM  = False  # Reset orthanc data
-UPLOAD_DICOM = True  # Upload Dicom files
+UPLOAD_DICOM = False  # Upload Dicom files
 ANNOUNCEMENT_INTERVAL = 50
 
 RUN_PROD = False
