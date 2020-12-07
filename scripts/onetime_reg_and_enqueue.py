@@ -19,7 +19,7 @@ from pprint import pprint
 from diana.services import HashRegistry, DicomDirectory, Orthanc
 from diana.dicom import DLv
 
-CLEAR_HASHES = True  # Reset hash registry
+CLEAR_HASHES = False  # Reset hash registry
 CLEAR_DICOM  = False  # Reset orthanc data
 UPLOAD_DICOM = False  # Upload Dicom files
 ANNOUNCEMENT_INTERVAL = 50
@@ -87,6 +87,6 @@ if __name__ == "__main__":
     H = HashRegistry(clear_cache=CLEAR_HASHES, cache_file=CACHE_FILE)
     O = Orthanc(url=ORTHANC_URL)
     if CLEAR_DICOM:
-        print("Clearing DICOM node")
+        input("Are you sure that you want to clear the queue?")
         O.clear()
     register_path(D, H, O, upload=UPLOAD_DICOM)

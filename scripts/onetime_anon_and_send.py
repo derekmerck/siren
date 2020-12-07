@@ -25,6 +25,7 @@ from diana.services.orthanc import oid_from
 import re
 
 CLEAR_SOURCE = False
+CLEAR_TARGET = True
 ANNOUNCEMENT_INTERVAL = 10
 
 # Set a test study oid
@@ -197,6 +198,9 @@ if __name__ == "__main__":
 
     O = Orthanc(url=ORTHANC_QUEUE_URL)
     P = Orthanc(url=ORTHANC_PEER_URL)
+    if CLEAR_TARGET:
+        input("Are you sure that you want to clear the target archive?")
+        P.clear()
     H = HashRegistry(cache_file=CACHE_FILE)
     # anonymize_and_send_w_registry(STUDY_OID, O, H, P, clear_source=CLEAR_SOURCE)
 
