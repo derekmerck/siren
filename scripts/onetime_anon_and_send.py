@@ -177,8 +177,9 @@ def review_patient_ids(queue: Orthanc):
     for study_oid in queue.inventory():
         study_dx = O.get(study_oid)
         pt_id = best_pt_id(study_dx)
-        print(f"Patient ID: {study_dx.tags.get('PatientName')}")
-        print(f"Patient Name: {study_dx.tags.get('PatientID')}")
+        print("------------------------")
+        print(f"Patient ID: {study_dx.tags.get('PatientID')}")
+        print(f"Patient Name: {study_dx.tags.get('PatientName')}")
         print(f"Best Patient ID: {pt_id}")
 
 
