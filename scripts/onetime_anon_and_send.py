@@ -54,12 +54,14 @@ def best_pt_id(dx: Dixel):
         candidate_ = candidate_.split("-")[0]
     if candidate_ != "":
         return candidate_
+
     candidate = dx.tags.get("PatientName", "")
+    candidate_ = re.sub(r'[^\w-]', '', candidate)
     if candidate_.find("-") >= 0:
         candidate_ = candidate_.split("-")[0]
-    candidate_ = re.sub(r'[^\w-]', '', candidate)
     if candidate_ != "":
         return candidate_
+
     return "UNKNOWN"
 
 def anonymize_and_send_w_registry(
