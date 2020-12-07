@@ -15,7 +15,18 @@ $ cd dev/siren/docker-compose
 $ docker-compose up
 ```
 
-Services all set to restart, so the services are robust against system resets.
+Services all set to restart, so the services are robust against system resets, but not to some crashes.
+
+## Perform a one-shot index and upload of existing assets
+
+If using `tee` to monitor the logs, run as _unbuffered_ with the `-u` flag.
+
+```
+$ python -u onetime_reg_and_enqueue.py | tee index_incoming.log
+...
+$ python -u onetime_anon_and_send.py | tee upload_incoming.log
+...
+```
 
 ## Launching the file watcher
 
@@ -54,4 +65,7 @@ $ python auto_reg_and_enqueue
 Test the watcher by copying some DICOM files around in `/data/incoming` on the host. DICOM files should show up on http://<host>:8042 (or 8043 for staging).  Non-DICOM creation events should be rejected.
 
 This process is a pain to debug b/c the watcher can crash quietly, without bringing down the poller.  So it is useful to keep it on a screen for debugging.
+
+
+## Run the queue-monitor
 

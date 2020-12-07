@@ -96,6 +96,7 @@ services:
     image: derekmerck/diana3
     container_name: diana
     volumes:
+      # todo: probably want the entire data directory to be persistent (pkl file is there)
       - /data/incoming:/data/incoming
 #      - type: bind
 #        source: /data/incoming
