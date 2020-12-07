@@ -42,14 +42,18 @@ else:
     ORTHANC_PEER_URL  = "http://hobit-s:8042"
     CACHE_FILE   = "/data/tmp/hashes-s.pkl"
 
+import re
+
 
 def best_pt_id(dx: Dixel):
     candidate = dx.tags.get("PatientID", "")
-    if candidate != "":
-        return candidate
+    candidate_ = re.sub(r'[^\w-]', '', candidate)
+    if candidate_ != "":
+        return candidate_
     candidate = dx.tags.get("PatientName", "")
-    if candidate != "":
-        return candidate
+    candidate_ = re.sub(r'[^\w-]', '', candidate)
+    if candidate_ != "":
+        return candidate_
     return "UNKNOWN"
 
 def anonymize_and_send_w_registry(
